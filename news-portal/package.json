@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "roboto-fontface": "^0.10.0",
     "vue": "^2.6.11",
+    "vue-loading-spinner": "^1.0.11",
     "vue-router": "^3.4.3",
     "vuetify": "^2.3.10"
   },

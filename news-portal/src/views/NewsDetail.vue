@@ -5,9 +5,9 @@ import NewsCard from '../components/NewsCard.vue';
     <AppBar :title='title' />
     <v-main>
       <v-container>
-        <h1 class='title'>News {{ $route.params.id }}</h1>
+        <h1 class='title'>{{ news.title }}</h1>
         <br />
-        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque voluptates veritatis alias reiciendis, illum, iste quae velit ab numquam aliquam optio, labore perspiciatis. Nisi iste, facere dolores accusantium eum vel! </p>
+        <p> {{ news.description }} </p>
       </v-container>
     </v-main>
   </v-app>
@@ -19,8 +19,13 @@ export default {
   data() {
     return {
       title: 'News Detail',
+      news: {}
     };
   },
+  mounted() {
+    console.log(this.$route.query.news);
+    this.news = JSON.parse(this.$route.query.news);
+  }
 };
 </script>
 

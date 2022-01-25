@@ -13,7 +13,19 @@ import NewsCard from '../components/NewsCard.vue';
 
           </v-col>
         </v-row>
-        <v-row>
+        <v-row
+          justify="center"
+          align="center"
+        >
+          <div
+            v-if='loading'
+            class='loader'
+          >
+            <square-grid
+              background='#E3F2FD'
+              size='100px'
+            />
+          </div>
           <v-col
             v-for="(news, index) in newsList"
             :key='index'
@@ -24,7 +36,7 @@ import NewsCard from '../components/NewsCard.vue';
             lg='3'
           >
             <NewsCard
-              v-bind:news='news'
+              :news='news'
               :index='index + 1'
             />
           </v-col>
@@ -35,43 +47,54 @@ import NewsCard from '../components/NewsCard.vue';
 </template>
 
 <script>
-import NewsCard from '../components/NewsCard.vue';
 import axios from 'axios'
+import { SquareGrid } from 'vue-loading-spinner'
+import NewsCard from '../components/NewsCard.vue'
+
 
 export default {
   name: 'home',
   components: {
     NewsCard,
+    SquareGrid,
   },
   data() {
     return {
       title: 'News Headlines',
-      newsList: []
+      newsList: [],
+      loading: false,
     };
   },
-  mounted() {
+  async created() {
     if (this.newsList.length == 0) {
-      this.getNews();
+      this.loading = true
+      try {
+        axios.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=099148be22804e849a0c6fe022b7cf5e')
+          .then(response => {
+            this.newsList = response.data.articles;
+            this.loading = false
+          });
+      } catch (error) {
+        console.log(error)
+        this.loading = false
+      }
     }
   },
   methods: {
     updateNewsTitle(editedNews) {
-      console.log(editedNews);
-      this.cards[editedNews.index].title = editedNews.modifiedNews.title;
+      if (editedNews.length <= 140) {
+        this.cards[editedNews.index].title = editedNews.modifiedNews.title;
+      }
     },
-    getNews() {
-      axios.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=099148be22804e849a0c6fe022b7cf5e')
-        .then(response => {
-          this.newsList = response.data.articles;
-          console.log(response);
-        });
-    }
   },
 };
 </script>
 
 <style>
   #home {
-    background-image: linear-gradient(rgba(128,208,199,.8), rgba(19,84,122,.5)) !important;
+    background-image: linear-gradient(rgba(19,84,122,.5), rgba(128,208,199,.8)) !important;
+  }
+  .loader {
+    margin-top: 200px
   }
 </style>
