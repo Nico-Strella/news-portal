@@ -12,7 +12,7 @@
       <template v-slot:img='{ props }'>
         <v-img
           v-bind='props'
-          gradient='to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)'
+          gradient='to top right, rgba(128,208,199,.8), rgba(19,84,122,1)'
         ></v-img>
       </template>
 
@@ -22,12 +22,26 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      <v-text-field
+        @focus='isSearchClosed = false'
+        @blur='isSearchClosed = true'
+        @input='debounceSearch'
+        @keyup.enter="debounceSearch"
+        v-model='searchQuery'
+        placeholder="Search"
+        prepend-inner-icon="mdi-magnify"
+        class='expanding-search'
+        :class="{'closed' : isSearchClosed && !searchQuery}"
+        filled
+        dense
+        clearable
+      ></v-text-field>
 
       <template v-slot:extension>
-        <v-tabs align-with-title>
+        <v-tabs
+          align-with-title
+          color='indigo darken-1'
+        >
           <v-tab @click='() => setActiveTab("Headlines")'>Headlines</v-tab>
           <v-tab @click='() => setActiveTab("History")'>History</v-tab>
         </v-tabs>
@@ -56,9 +70,11 @@ export default {
       title: 'News',
       isHeadlinesTabActived: true,
       isHistoryTabActived: false,
+      isSearchClosed: true,
+      searchQuery: null,
+      counterApiRequest: 0,
     };
   },
-
   methods: {
     setActiveTab(title) {
       if (title === 'Headlines') {
@@ -69,13 +85,41 @@ export default {
         this.isHistoryTabActived = true;
       }
     },
+    debounceSearch() {
+      if (this.counterApiRequest == 0) {        
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () =>  {
+          this.counterApiRequest++
+          await this.$store.dispatch('searchNews', this.searchQuery)
+          this.counterApiRequest--
+        }, 1000);
+      }
+    }
   },
 };
 </script>
 
-<style>
-  #home {
-    background-image: linear-gradient(rgba(19,84,122,.5), rgba(128,208,199,.8)) !important;
-  }
-  
+<style lang='sass'>
+  #home
+    background-image: linear-gradient(rgba(19,84,122,.5), rgba(128,208,199,.8)) !important
+
+  .v-input.expanding-search
+    transition: max-width 0.4s
+    .v-input__slot
+      background: transparent
+      cursor: pointer !important
+      &:before, &:after
+        border-color: transparent !important
+        color: transparent !important
+    &.closed
+      max-width: 45px
+      .v-input__slot
+        background: transparent !important
+  .v-text-field__slot
+    input
+      background-color: rgba(0,0,0,0)
+    
+      
+
+    
 </style>

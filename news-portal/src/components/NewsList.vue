@@ -13,7 +13,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              color="primary"
+              color="indigo darken-1"
               dark
               v-bind="attrs"
               v-on="on"
@@ -110,6 +110,17 @@ export default {
   async created() {
     this.fetchNews();
   },
+  mounted() {
+    this.loading = this.$store.state.isLoading
+  },
+  watch: {
+    '$store.state.currentNewsList'() {
+      this.newsList = this.$store.state.currentNewsList;
+    },
+    '$store.state.isLoading'() {
+      this.loading = this.$store.state.isLoading;
+    }
+  },
   methods: {
     applyFilter() {
       this.$store.dispatch('filterNews', this.filter);
@@ -117,20 +128,16 @@ export default {
       this.dialog = false;
     },
     async fetchNews() {
-      this.loading = true
       try {
         // this is at purpose. I want to refresh the list everytime I go to this section of the website
         await this.$store.dispatch('setCurrentNewsList');
         this.newsList = this.$store.getters.getCurrentNewsList;
-        this.loading = false
-
       } catch (error) {
         console.log(error)
-        this.loading = false
       }
 
       try {
-        await axios.get('https://newsapi.org/v2/sources?apiKey=099148be22804e849a0c6fe022b7cf5e')
+        await axios.get('https://newsapi.org/v2/sources?apiKey=d345cde6dcbd44a2a10adeab1070e2ae')
           .then(response => {
             this.sourcesList = response.data.sources;
           });
