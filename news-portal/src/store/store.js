@@ -10,12 +10,15 @@ export default new Vuex.Store({
         newsHistoryList: [],
     },
     mutations: {
-        addNewsToHistory(state, payload) {
-            state.newsHistoryList.push(payload);
-        },
         setCurrentNewsList(state, payload) {
             state.currentNewsList = payload;
         },
+        addNewsToHistory(state, visitedNews) {
+            state.newsHistoryList.push(visitedNews);
+        },
+        editNewsTitle(state, news, index) {
+            state.currentNewsList[index] = news;
+        }
     },
     actions: {
         async setCurrentNewsList(state) {
@@ -28,9 +31,14 @@ export default new Vuex.Store({
                 console.log(error)
             }
         },
-        addNewsToHistory(state, payload) {
-            state.commit('addNewsToHistory', payload)
+        addNewsToHistory(state, visitedNews) {
+            state.commit('addNewsToHistory', visitedNews)
         },
+        editNewsTitle(state, news, index) {
+            if (news.title.length <= 140) {
+                state.commit('editNewsTitle', news, index);
+            }
+        }
     },
     modules: {},
     getters: {

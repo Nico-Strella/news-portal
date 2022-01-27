@@ -1,8 +1,5 @@
 <template>
-  <v-app
-    id='home'
-    @openNews="updateHistory"
-  >
+  <v-app id='home'>
     <v-app-bar
       app
       color='rgba(19,84,122,1)'
@@ -32,10 +29,7 @@
     </v-app-bar>
     <v-main>
       <NewsList v-if='isHeadlinesTabActived' />
-      <NewsHistory
-        v-if='isHistoryTabActived'
-        :historyList='historyList'
-      />
+      <NewsHistory v-if='isHistoryTabActived' />
     </v-main>
   </v-app>
 </template>
@@ -55,7 +49,6 @@ export default {
       title: 'News',
       isHeadlinesTabActived: true,
       isHistoryTabActived: false,
-      historyList: [],
     };
   },
 
@@ -69,9 +62,6 @@ export default {
         this.isHistoryTabActived = true;
       }
     },
-    updateHistory(news) {
-      this.historyList.push(news);
-    }
   },
 };
 </script>

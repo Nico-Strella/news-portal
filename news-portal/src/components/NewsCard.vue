@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-card
-      @click='$emit("openNews", newsData); window.open(newsData.url);'
+      @click='redirectToNewsSourceWebsite'
       :elevation="hover ? 16 : 2"
       :class='{"on-hover": hover}'
       class='mx-auto'
@@ -46,7 +46,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row v-if='isEditable'>
             <v-col>
               <v-card-actions class='action-button-container'>
                 <v-spacer></v-spacer>
@@ -76,7 +76,8 @@
 export default {
   props: {
     news: Object,
-    index: Number
+    index: Number,
+    isEditable: Boolean
   },
   data() {
     return {
@@ -90,6 +91,10 @@ export default {
   methods: {
     editTitle() {
       this.edit = true;
+    },
+    redirectToNewsSourceWebsite() {
+      this.$store.commit('addNewsToHistory', this.news);
+      window.open(this.news.url);
     }
   },
   watch: {

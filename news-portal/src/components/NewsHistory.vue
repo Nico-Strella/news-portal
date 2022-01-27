@@ -21,7 +21,8 @@
       >
         <NewsCard
           :news='news'
-          :index='index + 1'
+          :index='index'
+          :isEditable=false
         />
       </v-col>
     </v-row>

@@ -1,5 +1,5 @@
 <template>
-  <v-container @input="updateNewsTitle">
+  <v-container>
     <v-row>
       <v-col>
 
@@ -29,7 +29,8 @@
       >
         <NewsCard
           :news='news'
-          :index='index + 1'
+          :index='index'
+          :isEditable=true
         />
       </v-col>
     </v-row>
