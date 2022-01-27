@@ -37,9 +37,7 @@ export default new Vuex.Store({
             state.commit('addNewsToHistory', visitedNews)
         },
         editNewsTitle(state, news, index) {
-            if (news.title.length <= 140) {
-                state.commit('editNewsTitle', news, index);
-            }
+            state.commit('editNewsTitle', news, index);
         }
     },
     modules: {},

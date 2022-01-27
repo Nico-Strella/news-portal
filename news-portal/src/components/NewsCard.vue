@@ -19,14 +19,17 @@
         v-on:click.stop
         class='title-container pa-2 d-flex flex-column'
       >
-        <input
-          type='text'
+        <v-text-field
+          counter='140'
+          autofocus
+          class='text-field'
+          :rules='rules'
           :value='newsData.title'
           :v-model='newsData.title'
-          @blur='newsData.title = $event.target.value; edit = false; $emit("input", {modifiedNews: newsData, index: index});'
-          @keyup.enter='newsData.title = $event.target.value; edit = false; $emit("input", {modifiedNews: newsData, index: index});'
-          v-focus=''
-        >
+          @blur='newsData.title = $event.target.value; edit = false; $store.dispatch("editNewsTitle", newsData, index);'
+          @keyup.enter='newsData.title = $event.target.value; edit = false; $store.dispatch("editNewsTitle", newsData, index);'
+          @focus='thisvalue = ""'
+        ></v-text-field>
       </v-card-title>
 
       <v-card-title
@@ -55,65 +58,6 @@
           </v-icon>
         </v-btn>
       </v-card-actions>
-      <!--
-
-      <v-row class='content-container'>
-        <v-col>
-          <v-row>
-            <v-col>
-              <v-card-title
-                v-if='edit'
-                v-on:click.stop
-                class='title-container'
-              >
-                <input
-                  type='text'
-                  :value='newsData.title'
-                  :v-model='newsData.title'
-                  @blur='newsData.title = $event.target.value; edit = false; $emit("input", {modifiedNews: newsData, index: index});'
-                  @keyup.enter='newsData.title = $event.target.value; edit = false; $emit("input", {modifiedNews: newsData, index: index});'
-                  v-focus=''
-                >
-              </v-card-title>
-
-              <v-card-title
-                elevation='10'
-                v-else
-                :v-text='newsData.title'
-                class='title-container'
-              >
-                <div class='title'>
-                  {{newsData.title}}
-                </div>
-              </v-card-title>
-            </v-col>
-          </v-row>
-
-          <v-row
-            v-if='isEditable'
-            class='action-button-container'
-          >
-            <v-col>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  fab
-                  dark
-                  small
-                  color="orange lighten-2"
-                  v-on:click.stop
-                  @click='editTitle'
-                >
-                  <v-icon dark>
-                    mdi-pencil
-                  </v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row> -->
-
     </v-card>
   </v-hover>
 </template>
@@ -128,7 +72,8 @@ export default {
   data() {
     return {
       edit: false,
-      newsData: this.news
+      newsData: this.news,
+      rules: [v => v.length <= 140 || 'Max 140 characters'],
     }
   },
   created() {
@@ -139,7 +84,7 @@ export default {
       this.edit = true;
     },
     redirectToNewsSourceWebsite() {
-      this.$store.commit('addNewsToHistory', this.news);
+      this.$store.dispatch('addNewsToHistory', this.news);
       window.open(this.news.url);
     }
   },
@@ -175,6 +120,9 @@ export default {
     white-space: normal;
     word-break: normal;
     overflow: hidden ;
+  }
+  .text-field {
+    width: 100%;
   }
   .title {
     overflow: hidden ;
