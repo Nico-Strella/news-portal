@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import HomePage from '../views/HomePage';
-import NewsDetail from '../views/NewsDetail';
 
 Vue.use(VueRouter);
 
@@ -10,12 +9,6 @@ const routes = [
         name: 'Home',
         path: '/',
         component: HomePage
-    },
-    {
-        name: 'News Detail',
-        path: '/News/:newsId',
-        component: NewsDetail,
-        props: true,
     },
 ];
 

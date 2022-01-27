@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-card
-      @click='window.open(newsData.url)'
+      @click='$emit("openNews", newsData); window.open(newsData.url);'
       :elevation="hover ? 16 : 2"
       :class='{"on-hover": hover}'
       class='mx-auto'
@@ -88,16 +88,13 @@ export default {
     this.window = window;
   },
   methods: {
-    redirectToNewsDetailPage() {
-      // this.$router.push({ name: 'News Detail', params: { newsId: this.index }, query: { news: JSON.stringify(this.news) } });
-    },
     editTitle() {
       this.edit = true;
     }
   },
   watch: {
-    value: function () {
-      this.newsTitle = this.news.title;
+    value() {
+      this.newsData.title = this.news.title;
     }
   },
   directives: {

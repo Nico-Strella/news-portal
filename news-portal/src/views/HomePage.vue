@@ -1,91 +1,77 @@
-import NewsCard from '../components/NewsCard.vue';
-
 <template>
   <v-app
     id='home'
-    @input="updateNewsTitle"
+    @openNews="updateHistory"
   >
-    <AppBar :title='title' />
-    <v-main>
-      <v-container>
-        <v-row>
-          <v-col>
+    <v-app-bar
+      app
+      color='rgba(19,84,122,1)'
+      dark
+      shrink-on-scroll
+      prominent
+      src='../assets/banner.jpg'
+      fade-img-on-scroll
+    >
+      <template v-slot:img='{ props }'>
+        <v-img
+          v-bind='props'
+          gradient='to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)'
+        ></v-img>
+      </template>
 
-          </v-col>
-        </v-row>
-        <v-row
-          justify="center"
-          align="center"
-        >
-          <div
-            v-if='loading'
-            class='loader'
-          >
-            <square-grid
-              background='#E3F2FD'
-              size='100px'
-            />
-          </div>
-          <v-col
-            v-for="(news, index) in newsList"
-            :key='index'
-            cols='12'
-            xs='12'
-            sm='6'
-            md='4'
-            lg='3'
-          >
-            <NewsCard
-              :news='news'
-              :index='index + 1'
-            />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-app-bar-title>
+        <div>{{ title }}</div>
+      </v-app-bar-title>
+      <template v-slot:extension>
+        <v-tabs align-with-title>
+          <v-tab @click='() => setActiveTab("Headlines")'>Headlines</v-tab>
+          <v-tab @click='() => setActiveTab("History")'>History</v-tab>
+        </v-tabs>
+      </template>
+
+    </v-app-bar>
+    <v-main>
+      <NewsList v-if='isHeadlinesTabActived' />
+      <NewsHistory
+        v-if='isHistoryTabActived'
+        :historyList='historyList'
+      />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import axios from 'axios'
-import { SquareGrid } from 'vue-loading-spinner'
-import NewsCard from '../components/NewsCard.vue'
-
+import NewsList from '../components/NewsList.vue'
+import NewsHistory from '../components/NewsHistory.vue'
 
 export default {
   name: 'home',
   components: {
-    NewsCard,
-    SquareGrid,
+    NewsList,
+    NewsHistory
   },
   data() {
     return {
-      title: 'News Headlines',
-      newsList: [],
-      loading: false,
+      title: 'News',
+      isHeadlinesTabActived: true,
+      isHistoryTabActived: false,
+      historyList: [],
     };
   },
-  async created() {
-    if (this.newsList.length == 0) {
-      this.loading = true
-      try {
-        axios.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=099148be22804e849a0c6fe022b7cf5e')
-          .then(response => {
-            this.newsList = response.data.articles;
-            this.loading = false
-          });
-      } catch (error) {
-        console.log(error)
-        this.loading = false
-      }
-    }
-  },
+
   methods: {
-    updateNewsTitle(editedNews) {
-      if (editedNews.length <= 140) {
-        this.cards[editedNews.index].title = editedNews.modifiedNews.title;
+    setActiveTab(title) {
+      if (title === 'Headlines') {
+        this.isHeadlinesTabActived = true;
+        this.isHistoryTabActived = false;
+      } else if (title === 'History') {
+        this.isHeadlinesTabActived = false;
+        this.isHistoryTabActived = true;
       }
     },
+    updateHistory(news) {
+      this.historyList.push(news);
+    }
   },
 };
 </script>
@@ -94,7 +80,5 @@ export default {
   #home {
     background-image: linear-gradient(rgba(19,84,122,.5), rgba(128,208,199,.8)) !important;
   }
-  .loader {
-    margin-top: 200px
-  }
+  
 </style>
