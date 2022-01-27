@@ -56,6 +56,7 @@ export default {
     if (this.newsList.length == 0) {
       this.loading = true
       try {
+        // this is at purpose. I want to refresh the list everytime I go to this section of the website
         await this.$store.dispatch('setCurrentNewsList');
         this.newsList = this.$store.getters.getCurrentNewsList;
         this.loading = false

@@ -19,17 +19,20 @@
         v-on:click.stop
         class='title-container pa-2 d-flex flex-column'
       >
-        <v-text-field
+        <v-textarea
+          outlined
+          :no-resize=true
           counter='140'
           autofocus
-          class='text-field'
+          height='110'
+          class='text-area'
           :rules='rules'
           :value='newsData.title'
           :v-model='newsData.title'
           @blur='newsData.title = $event.target.value; edit = false; $store.dispatch("editNewsTitle", newsData, index);'
           @keyup.enter='newsData.title = $event.target.value; edit = false; $store.dispatch("editNewsTitle", newsData, index);'
           @focus='thisvalue = ""'
-        ></v-text-field>
+        ></v-textarea>
       </v-card-title>
 
       <v-card-title
@@ -103,7 +106,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
   input {
     color:white;
     background-color: rgb(0,0,0,0.5);
@@ -121,8 +124,15 @@ export default {
     word-break: normal;
     overflow: hidden ;
   }
-  .text-field {
+  .text-area{
     width: 100%;
+  }
+  textarea{
+    -ms-overflow-style: none !important;  /* IE and Edge */
+    scrollbar-width: none !important;  /* Firefox */
+  }
+  textarea::-webkit-scrollbar {
+    display: none;
   }
   .title {
     overflow: hidden ;

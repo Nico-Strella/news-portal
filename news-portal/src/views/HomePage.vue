@@ -19,6 +19,13 @@
       <v-app-bar-title>
         <div>{{ title }}</div>
       </v-app-bar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
       <template v-slot:extension>
         <v-tabs align-with-title>
           <v-tab @click='() => setActiveTab("Headlines")'>Headlines</v-tab>
