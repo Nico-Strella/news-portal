@@ -14,7 +14,9 @@ export default new Vuex.Store({
             state.currentNewsList = payload;
         },
         addNewsToHistory(state, visitedNews) {
-            state.newsHistoryList.push(visitedNews);
+            if (state.newsHistoryList.filter(news => news.url == visitedNews.url).length == 0) {
+                state.newsHistoryList.push(visitedNews);
+            }
         },
         editNewsTitle(state, news, index) {
             state.currentNewsList[index] = news;
