@@ -1,8 +1,57 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-
+    <v-row justify='end'>
+      <v-col
+        v-if='!loading'
+        cols="1"
+      >
+        <v-dialog
+          v-model="dialog"
+          scrollable
+          max-width="300px"
+          class='opacity'
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              Filter
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>Select News Source</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text style="height: 300px;">
+              <v-checkbox
+                v-model="filter"
+                v-for="(newsSource, index) in sourcesList"
+                :key='index'
+                :label="newsSource.name"
+                :value="newsSource.name"
+              ></v-checkbox>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="dialog = false"
+              >
+                Close
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="applyFilter"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-col>
     </v-row>
     <v-row
@@ -38,8 +87,10 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { SquareGrid } from 'vue-loading-spinner'
 import NewsCard from './NewsCard.vue'
+import filterNewsSource from '../utilities/filter';
 
 export default {
   components: {
@@ -48,30 +99,46 @@ export default {
   },
   data() {
     return {
-      newsList: [],
       loading: false,
+      sourcesList: [],
+      hasError: false,
+      dialog: false,
+      filter: [],
+      newsList: []
     };
   },
   async created() {
-    if (this.newsList.length == 0) {
+    this.fetchNews();
+  },
+  methods: {
+    applyFilter() {
+      this.$store.dispatch('filterNews', this.filter);
+      this.newsList = this.filter.length > 0 ? filterNewsSource(this.$store.getters.getCurrentNewsList, this.filter) : this.fetchNews();
+      this.dialog = false;
+    },
+    async fetchNews() {
       this.loading = true
       try {
         // this is at purpose. I want to refresh the list everytime I go to this section of the website
         await this.$store.dispatch('setCurrentNewsList');
         this.newsList = this.$store.getters.getCurrentNewsList;
         this.loading = false
+
       } catch (error) {
         console.log(error)
         this.loading = false
       }
-    }
-  },
-  methods: {
-    updateNewsTitle(editedNews) {
-      if (editedNews.length <= 140) {
-        this.cards[editedNews.index].title = editedNews.modifiedNews.title;
+
+      try {
+        await axios.get('https://newsapi.org/v2/sources?apiKey=099148be22804e849a0c6fe022b7cf5e')
+          .then(response => {
+            this.sourcesList = response.data.sources;
+          });
+      } catch (error) {
+        console.log(error)
+        this.hasError = true;
       }
-    },
+    }
   }
 };
 </script>

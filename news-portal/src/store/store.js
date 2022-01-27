@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import axios from 'axios'
+import axios from 'axios';
 
 Vue.use(Vuex);
 
@@ -12,6 +12,7 @@ export default new Vuex.Store({
     mutations: {
         setCurrentNewsList(state, payload) {
             state.currentNewsList = payload;
+            state.filteredList = payload;
         },
         addNewsToHistory(state, visitedNews) {
             if (state.newsHistoryList.filter(news => news.url == visitedNews.url).length == 0) {
@@ -20,7 +21,8 @@ export default new Vuex.Store({
         },
         editNewsTitle(state, news, index) {
             state.currentNewsList[index] = news;
-        }
+        },
+
     },
     actions: {
         async setCurrentNewsList(state) {
@@ -38,7 +40,7 @@ export default new Vuex.Store({
         },
         editNewsTitle(state, news, index) {
             state.commit('editNewsTitle', news, index);
-        }
+        },
     },
     modules: {},
     getters: {

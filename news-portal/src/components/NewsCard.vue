@@ -4,7 +4,7 @@
       @click='redirectToNewsSourceWebsite'
       :elevation="hover ? 16 : 2"
       :class='{"on-hover": hover}'
-      class='mx-auto'
+      class='mx-auto news-card'
       max-width="344"
       gradient='to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)'
       height='400px'
@@ -91,11 +91,6 @@ export default {
       window.open(this.news.url);
     }
   },
-  watch: {
-    value() {
-      this.newsData.title = this.news.title;
-    }
-  },
   directives: {
     focus: {
       inserted(el) {
@@ -112,10 +107,10 @@ export default {
     background-color: rgb(0,0,0,0.5);
     width: 100%
   }
-  .v-card {
+  .news-card {
     transition: opacity .2s ease-in-out;
   }
-  .v-card:not(.on-hover) {
+  .news-card:not(.on-hover) {
     opacity: 0.8;
   }
   .title-container {
