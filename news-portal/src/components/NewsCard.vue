@@ -14,7 +14,50 @@
         height="200px"
       ></v-img>
 
-      <v-row>
+      <v-card-title
+        v-if='edit'
+        v-on:click.stop
+        class='title-container pa-2 d-flex flex-column'
+      >
+        <input
+          type='text'
+          :value='newsData.title'
+          :v-model='newsData.title'
+          @blur='newsData.title = $event.target.value; edit = false; $emit("input", {modifiedNews: newsData, index: index});'
+          @keyup.enter='newsData.title = $event.target.value; edit = false; $emit("input", {modifiedNews: newsData, index: index});'
+          v-focus=''
+        >
+      </v-card-title>
+
+      <v-card-title
+        elevation='10'
+        v-else
+        :v-text='newsData.title'
+        class='title-container pa-2 d-flex flex-column'
+      >
+        <div class='title'>
+          {{newsData.title}}
+        </div>
+      </v-card-title>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          fab
+          dark
+          small
+          color="orange lighten-2"
+          v-on:click.stop
+          @click='editTitle'
+        >
+          <v-icon dark>
+            mdi-pencil
+          </v-icon>
+        </v-btn>
+      </v-card-actions>
+      <!--
+
+      <v-row class='content-container'>
         <v-col>
           <v-row>
             <v-col>
@@ -46,9 +89,12 @@
             </v-col>
           </v-row>
 
-          <v-row v-if='isEditable'>
+          <v-row
+            v-if='isEditable'
+            class='action-button-container'
+          >
             <v-col>
-              <v-card-actions class='action-button-container'>
+              <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
                   fab
@@ -66,7 +112,7 @@
             </v-col>
           </v-row>
         </v-col>
-      </v-row>
+      </v-row> -->
 
     </v-card>
   </v-hover>
@@ -124,11 +170,8 @@ export default {
   .v-card:not(.on-hover) {
     opacity: 0.8;
   }
-  .content-container {
-    max-height: 200px;
-  }
   .title-container {
-    max-height: 119px !important;
+    height: 140px !important;
     white-space: normal;
     word-break: normal;
     overflow: hidden ;
@@ -137,6 +180,6 @@ export default {
     overflow: hidden ;
   }
   .action-button-container {
-    max-height: 100px !important;
+    height: 100%;
   }
 </style>
